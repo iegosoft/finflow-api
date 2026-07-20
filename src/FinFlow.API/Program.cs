@@ -1,9 +1,22 @@
 using System.Text;
+using FinFlow.Domain.Interfaces;
+using FinFlow.Infra.Contexto;
+using FinFlow.Infra.Repositorios;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 
 var builder = WebApplication.CreateBuilder(args);
+
+// ── Banco de dados com Entity Framework Core e PostgreSQL ──
+builder.Services.AddDbContext<FinFlowDbContext>(opcoes =>
+    opcoes.UseNpgsql(builder.Configuration.GetConnectionString("Postgres")));
+
+// ── Repositórios via injeção de dependência ──
+builder.Services.AddScoped<IUsuarioRepositorio, UsuarioRepositorio>();
+builder.Services.AddScoped<ICategoriaRepositorio, CategoriaRepositorio>();
+builder.Services.AddScoped<ITransacaoRepositorio, TransacaoRepositorio>();
 
 // ── Controladores e serialização ──
 builder.Services.AddControllers();
