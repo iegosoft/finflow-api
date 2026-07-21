@@ -2,6 +2,7 @@ using System.Text;
 using FinFlow.API.Middlewares;
 using FinFlow.Application.DTOs.Autenticacao;
 using FinFlow.Application.DTOs.Categorias;
+using FinFlow.Application.DTOs.Transacoes;
 using FinFlow.Application.Interfaces;
 using FinFlow.Application.Servicos;
 using FinFlow.Application.Validadores;
@@ -29,12 +30,15 @@ builder.Services.AddScoped<ITransacaoRepositorio, TransacaoRepositorio>();
 // ── Serviços da camada Application via injeção de dependência ──
 builder.Services.AddScoped<IAutenticacaoServico, AutenticacaoServico>();
 builder.Services.AddScoped<ICategoriaServico, CategoriaServico>();
+builder.Services.AddScoped<ITransacaoServico, TransacaoServico>();
 
 // ── Validadores FluentValidation ──
 builder.Services.AddFluentValidationAutoValidation();
 builder.Services.AddScoped<IValidator<RegistrarDto>, RegistrarValidador>();
 builder.Services.AddScoped<IValidator<CriarCategoriaDto>, CriarCategoriaValidador>();
 builder.Services.AddScoped<IValidator<AtualizarCategoriaDto>, AtualizarCategoriaValidador>();
+builder.Services.AddScoped<IValidator<CriarTransacaoDto>, CriarTransacaoValidador>();
+builder.Services.AddScoped<IValidator<AtualizarTransacaoDto>, AtualizarTransacaoValidador>();
 
 // ── Controladores e serialização ──
 builder.Services.AddControllers();
