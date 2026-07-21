@@ -1,9 +1,15 @@
 using System.Text;
+using FinFlow.API.Middlewares;
+using FinFlow.Application.DTOs.Autenticacao;
+using FinFlow.Application.DTOs.Categorias;
 using FinFlow.Application.Interfaces;
 using FinFlow.Application.Servicos;
+using FinFlow.Application.Validadores;
 using FinFlow.Domain.Interfaces;
 using FinFlow.Infra.Contexto;
 using FinFlow.Infra.Repositorios;
+using FluentValidation;
+using FluentValidation.AspNetCore;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
@@ -22,6 +28,13 @@ builder.Services.AddScoped<ITransacaoRepositorio, TransacaoRepositorio>();
 
 // ── Serviços da camada Application via injeção de dependência ──
 builder.Services.AddScoped<IAutenticacaoServico, AutenticacaoServico>();
+builder.Services.AddScoped<ICategoriaServico, CategoriaServico>();
+
+// ── Validadores FluentValidation ──
+builder.Services.AddFluentValidationAutoValidation();
+builder.Services.AddScoped<IValidator<RegistrarDto>, RegistrarValidador>();
+builder.Services.AddScoped<IValidator<CriarCategoriaDto>, CriarCategoriaValidador>();
+builder.Services.AddScoped<IValidator<AtualizarCategoriaDto>, AtualizarCategoriaValidador>();
 
 // ── Controladores e serialização ──
 builder.Services.AddControllers();
@@ -116,6 +129,9 @@ if (app.Environment.IsDevelopment())
         opcoes.RoutePrefix = string.Empty;
     });
 }
+
+// ── Middleware global de tratamento de erros — deve ser o primeiro da pipeline ──
+app.UseMiddleware<TratamentoDeErrosMiddleware>();
 
 app.UseHttpsRedirection();
 app.UseCors("PermitirTudo");
