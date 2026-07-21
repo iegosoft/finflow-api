@@ -1,4 +1,6 @@
 using System.Text;
+using FinFlow.Application.Interfaces;
+using FinFlow.Application.Servicos;
 using FinFlow.Domain.Interfaces;
 using FinFlow.Infra.Contexto;
 using FinFlow.Infra.Repositorios;
@@ -17,6 +19,9 @@ builder.Services.AddDbContext<FinFlowDbContext>(opcoes =>
 builder.Services.AddScoped<IUsuarioRepositorio, UsuarioRepositorio>();
 builder.Services.AddScoped<ICategoriaRepositorio, CategoriaRepositorio>();
 builder.Services.AddScoped<ITransacaoRepositorio, TransacaoRepositorio>();
+
+// ── Serviços da camada Application via injeção de dependência ──
+builder.Services.AddScoped<IAutenticacaoServico, AutenticacaoServico>();
 
 // ── Controladores e serialização ──
 builder.Services.AddControllers();
