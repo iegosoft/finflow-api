@@ -3,6 +3,8 @@
 ![CI](https://github.com/iegosoft/finflow-api/actions/workflows/ci.yml/badge.svg)
 ![.NET](https://img.shields.io/badge/.NET-8.0-512BD4?logo=dotnet)
 ![License](https://img.shields.io/badge/license-MIT-green)
+![PostgreSQL](https://img.shields.io/badge/PostgreSQL-16-336791?logo=postgresql&logoColor=white)
+![Docker](https://img.shields.io/badge/Docker-ready-2496ED?logo=docker&logoColor=white)
 
 API RESTful de controle financeiro pessoal desenvolvida em C# com ASP.NET Core 8.
 
@@ -11,10 +13,11 @@ API RESTful de controle financeiro pessoal desenvolvida em C# com ASP.NET Core 8
 ## Funcionalidades
 
 - Autenticação com JWT Bearer Token e Refresh Token
-- Cadastro e gerenciamento de categorias financeiras
-- Registro e consulta de transações (receitas e saídas)
-- Relatório mensal por categoria
+- Cadastro e gerenciamento de categorias financeiras por usuário
+- Registro e consulta de transações (receitas e saídas) com filtros e paginação
+- Relatório mensal com totais por categoria e saldo do período
 - Documentação interativa via Swagger
+- Testes unitários com xUnit, Moq e FluentAssertions
 
 ---
 
@@ -26,8 +29,11 @@ API RESTful de controle financeiro pessoal desenvolvida em C# com ASP.NET Core 8
 | ASP.NET Core Web API | 8.0 |
 | Entity Framework Core | 8.0 |
 | PostgreSQL | 16 |
-| xUnit + Moq | - |
-| Docker + Docker Compose | - |
+| BCrypt.Net | 4.0 |
+| FluentValidation | 11.9 |
+| xUnit + Moq + FluentAssertions | — |
+| Docker + Docker Compose | — |
+| GitHub Actions | — |
 
 ---
 
@@ -37,7 +43,7 @@ API RESTful de controle financeiro pessoal desenvolvida em C# com ASP.NET Core 8
 finflow-api/
 ├── src/
 │   ├── FinFlow.API/              ← Controllers, Program.cs, Middlewares
-│   ├── FinFlow.Application/      ← Services, DTOs, Interfaces de Service
+│   ├── FinFlow.Application/      ← Services, DTOs, Interfaces, Validadores
 │   ├── FinFlow.Domain/           ← Entidades, Interfaces de Repository, Enums
 │   └── FinFlow.Infra/            ← DbContext, Repositories, Migrations
 ├── tests/
@@ -45,6 +51,7 @@ finflow-api/
 ├── .github/
 │   └── workflows/
 │       └── ci.yml
+├── Dockerfile
 ├── docker-compose.yml
 ├── .gitignore
 ├── LICENSE
@@ -60,34 +67,40 @@ finflow-api/
 - [.NET 8 SDK](https://dotnet.microsoft.com/download/dotnet/8.0)
 - [Docker Desktop](https://www.docker.com/products/docker-desktop/)
 
-### 1. Clone o repositório
+### Opção 1 — Apenas o banco (recomendado para desenvolvimento)
 
 ```bash
+# 1. Clone o repositório
 git clone https://github.com/iegosoft/finflow-api.git
 cd finflow-api
-```
 
-### 2. Suba o banco de dados
-
-```bash
+# 2. Suba o PostgreSQL via Docker
 docker compose up postgres -d
-```
 
-### 3. Aplique as migrations
-
-```bash
+# 3. Aplique as migrations
 dotnet ef database update --project src/FinFlow.Infra --startup-project src/FinFlow.API
-```
 
-### 4. Execute a API
-
-```bash
+# 4. Execute a API
 dotnet run --project src/FinFlow.API
 ```
 
-### 5. Acesse o Swagger
+Acesse o Swagger em: `http://localhost:5000`
 
-Abra o navegador em: `http://localhost:5000`
+### Opção 2 — Aplicação completa com Docker
+
+```bash
+docker compose up --build
+```
+
+API disponível em: `http://localhost:8080`
+
+---
+
+## Executar os testes
+
+```bash
+dotnet test
+```
 
 ---
 
@@ -114,12 +127,25 @@ Abra o navegador em: `http://localhost:5000`
 
 | Método | Rota | Descrição |
 |---|---|---|
-| GET | `/api/transacoes` | Lista com filtros |
+| GET | `/api/transacoes` | Lista com filtros e paginação |
 | GET | `/api/transacoes/{id}` | Busca por ID |
 | POST | `/api/transacoes` | Cria uma transação |
 | PUT | `/api/transacoes/{id}` | Atualiza uma transação |
 | DELETE | `/api/transacoes/{id}` | Remove uma transação |
 | GET | `/api/transacoes/relatorio-mensal` | Relatório mensal por categoria |
+
+---
+
+## Variáveis de ambiente
+
+| Variável | Descrição |
+|---|---|
+| `ConnectionStrings__Postgres` | String de conexão com o PostgreSQL |
+| `Jwt__Chave` | Chave secreta para assinar o JWT |
+| `Jwt__Emissor` | Emissor do token |
+| `Jwt__Audiencia` | Audiência do token |
+| `Jwt__ExpiracaoHoras` | Tempo de expiração do JWT em horas |
+| `Jwt__ExpiracaoRefreshTokenDias` | Tempo de expiração do refresh token em dias |
 
 ---
 
