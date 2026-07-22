@@ -1,0 +1,30 @@
+name: CI — Build e Testes
+
+on:
+  push:
+    branches: ["**"]
+  pull_request:
+    branches: ["**"]
+
+jobs:
+  build-e-testes:
+    name: Build e Testes
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout do código
+        uses: actions/checkout@v4
+
+      - name: Configurar .NET 8
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: "8.0.x"
+
+      - name: Restaurar dependências
+        run: dotnet restore FinFlow.sln
+
+      - name: Build da solução
+        run: dotnet build FinFlow.sln --no-restore --configuration Release
+
+      - name: Executar testes unitários
+        run: dotnet test FinFlow.sln --no-build --configuration Release --verbosity normal
