@@ -12,6 +12,11 @@ services:
       - "5432:5432"
     volumes:
       - finflow_postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U finflow -d finflow_db"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
     restart: unless-stopped
 
   api:
@@ -20,19 +25,20 @@ services:
       dockerfile: Dockerfile
     container_name: finflow_api
     environment:
-      - ASPNETCORE_ENVIRONMENT=Development
+      - ASPNETCORE_ENVIRONMENT=Production
+      - ASPNETCORE_URLS=http://+:8080
       - ConnectionStrings__Postgres=Host=postgres;Port=5432;Database=finflow_db;Username=finflow;Password=finflow@2026
       - Jwt__Chave=FINFLOW_JWT_SECRET_KEY_DEVE_SER_SUBSTITUIDA_EM_PRODUCAO
       - Jwt__Emissor=FinFlowAPI
       - Jwt__Audiencia=FinFlowCliente
       - Jwt__ExpiracaoHoras=1
+      - Jwt__ExpiracaoRefreshTokenDias=7
     ports:
       - "8080:8080"
     depends_on:
-      - postgres
+      postgres:
+        condition: service_healthy
     restart: unless-stopped
-    profiles:
-      - full
 
 volumes:
   finflow_postgres_data:
