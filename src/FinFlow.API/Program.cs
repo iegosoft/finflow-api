@@ -123,8 +123,15 @@ builder.Services.AddCors(opcoes =>
 
 var app = builder.Build();
 
-// ── Swagger disponível apenas em desenvolvimento ──
-if (app.Environment.IsDevelopment())
+// ── Aplica as migrations pendentes na inicialização da API ──
+using (var escopo = app.Services.CreateScope())
+{
+    var contexto = escopo.ServiceProvider.GetRequiredService<FinFlowDbContext>();
+    contexto.Database.Migrate();
+}
+
+// ── Swagger disponível em desenvolvimento ou quando habilitado via configuração ──
+if (app.Environment.IsDevelopment() || app.Configuration.GetValue<bool>("Swagger:Habilitado"))
 {
     app.UseSwagger();
     app.UseSwaggerUI(opcoes =>

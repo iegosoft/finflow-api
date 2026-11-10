@@ -1,4 +1,6 @@
 using System;
+using FinFlow.Infra.Contexto;
+using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
@@ -6,6 +8,8 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace FinFlow.Infra.Migrations
 {
     /// <inheritdoc />
+    [DbContext(typeof(FinFlowDbContext))]
+    [Migration("20260101000000_CriacaoInicial")]
     public partial class CriacaoInicial : Migration
     {
         /// <inheritdoc />
