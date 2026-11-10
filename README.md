@@ -5,8 +5,29 @@
 ![License](https://img.shields.io/badge/license-MIT-green)
 ![PostgreSQL](https://img.shields.io/badge/PostgreSQL-16-336791?logo=postgresql&logoColor=white)
 ![Docker](https://img.shields.io/badge/Docker-ready-2496ED?logo=docker&logoColor=white)
+[![API online](https://img.shields.io/badge/API-online-46E3B7?logo=render&logoColor=white)](https://finflow-api-9v36.onrender.com)
 
 API RESTful de controle financeiro pessoal desenvolvida em C# com ASP.NET Core 8.
+
+---
+
+## 🚀 Demonstração online
+
+**Swagger:** https://finflow-api-9v36.onrender.com
+
+Use a conta de demonstração para testar sem precisar se cadastrar:
+
+| E-mail | Senha |
+|---|---|
+| `teste.deploy@finflow.com` | `Senha@123` |
+
+1. Faça login em `POST /api/auth/login` e copie o `token` da resposta
+2. Clique em **Authorize** e cole o token
+3. Teste os endpoints de categorias, transações e relatório mensal
+
+> ⏳ A API está no plano gratuito do Render e hiberna após um período sem acesso. A primeira requisição pode levar cerca de 50 segundos; as seguintes são imediatas.
+
+![Swagger da FinFlow API em produção](docs/imagens/swagger.png)
 
 ---
 
