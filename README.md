@@ -144,12 +144,26 @@ dotnet test
 
 | Variável | Descrição |
 |---|---|
-| `ConnectionStrings__Postgres` | String de conexão com o PostgreSQL |
+| `ConnectionStrings__Postgres` | String de conexão com o PostgreSQL (aceita formato chave=valor ou URI `postgresql://...`) |
 | `Jwt__Chave` | Chave secreta para assinar o JWT |
 | `Jwt__Emissor` | Emissor do token |
 | `Jwt__Audiencia` | Audiência do token |
 | `Jwt__ExpiracaoHoras` | Tempo de expiração do JWT em horas |
 | `Jwt__ExpiracaoRefreshTokenDias` | Tempo de expiração do refresh token em dias |
+| `Swagger__Habilitado` | Habilita o Swagger fora do ambiente de desenvolvimento |
+
+---
+
+## Deploy
+
+A API é publicada gratuitamente no **[Render](https://render.com)** via `Dockerfile`, com banco PostgreSQL no **[Neon](https://neon.tech)**. A infraestrutura está descrita no Blueprint [`render.yaml`](render.yaml).
+
+1. Crie um projeto no Neon e copie a connection string (`postgresql://...`)
+2. No Render, clique em **New → Blueprint** e selecione este repositório
+3. Informe a connection string do Neon em `ConnectionStrings__Postgres`
+4. A chave JWT é gerada automaticamente pelo Render e as migrations são aplicadas na inicialização
+
+> No plano gratuito, a API hiberna após 15 minutos sem acesso; a primeira requisição seguinte pode levar até um minuto.
 
 ---
 

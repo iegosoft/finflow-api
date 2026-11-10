@@ -18,9 +18,11 @@ using Microsoft.OpenApi.Models;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// ── Banco de dados com Entity Framework Core e PostgreSQL ──
+// ── Banco de dados com Entity Framework Core e PostgreSQL (aceita formato URI do Neon/Render) ──
+var connectionString = ConversorConnectionString.Converter(
+    builder.Configuration.GetConnectionString("Postgres")!);
 builder.Services.AddDbContext<FinFlowDbContext>(opcoes =>
-    opcoes.UseNpgsql(builder.Configuration.GetConnectionString("Postgres")));
+    opcoes.UseNpgsql(connectionString));
 
 // ── Repositórios via injeção de dependência ──
 builder.Services.AddScoped<IUsuarioRepositorio, UsuarioRepositorio>();
