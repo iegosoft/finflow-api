@@ -77,14 +77,11 @@ cd finflow-api
 # 2. Suba o PostgreSQL via Docker
 docker compose up postgres -d
 
-# 3. Aplique as migrations
-dotnet ef database update --project src/FinFlow.Infra --startup-project src/FinFlow.API
-
-# 4. Execute a API
-dotnet run --project src/FinFlow.API
+# 3. Execute a API (as migrations são aplicadas automaticamente na inicialização)
+dotnet run --project src/FinFlow.API --launch-profile http
 ```
 
-Acesse o Swagger em: `http://localhost:5000`
+Acesse o Swagger em: `http://localhost:5177`
 
 ### Opção 2 — Aplicação completa com Docker
 
@@ -92,7 +89,14 @@ Acesse o Swagger em: `http://localhost:5000`
 docker compose up --build
 ```
 
-API disponível em: `http://localhost:8080`
+Acesse o Swagger em: `http://localhost:8080`
+
+### Testando pelo Swagger
+
+1. Crie uma conta em `POST /api/auth/registrar`
+2. Faça login em `POST /api/auth/login` e copie o `token` da resposta
+3. Clique em **Authorize** e cole o token
+4. Use os endpoints de categorias, transações e relatório mensal
 
 ---
 
