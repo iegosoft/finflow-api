@@ -1,0 +1,31 @@
+# ── Blueprint do Render: API publicada via Dockerfile no plano gratuito ──
+# O banco PostgreSQL fica no Neon (plano gratuito); a connection string é informada no painel do Render.
+services:
+  - type: web
+    name: finflow-api
+    runtime: docker
+    plan: free
+    region: virginia
+    branch: main
+    dockerfilePath: ./Dockerfile
+    healthCheckPath: /
+    envVars:
+      - key: ASPNETCORE_ENVIRONMENT
+        value: Production
+      - key: PORT
+        value: "8080"
+      - key: Swagger__Habilitado
+        value: "true"
+      # ── Segredos: connection string informada no painel e chave JWT gerada pelo Render ──
+      - key: ConnectionStrings__Postgres
+        sync: false
+      - key: Jwt__Chave
+        generateValue: true
+      - key: Jwt__Emissor
+        value: FinFlowAPI
+      - key: Jwt__Audiencia
+        value: FinFlowCliente
+      - key: Jwt__ExpiracaoHoras
+        value: "1"
+      - key: Jwt__ExpiracaoRefreshTokenDias
+        value: "7"
